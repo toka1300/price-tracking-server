@@ -12,8 +12,10 @@ const parsePriceInfo = (data) => {
   return { minPrice: parsedJson?.grid?.minPrice }
 }
 
-app.get('/fetch-url', async (req, res) => {
+app.post('/fetch-url', async (req, res) => {
   const targetUrl = req.query.url;
+  const id = req.body;
+  console.log(id);
 
   try {
     const response = await fetch(targetUrl);
