@@ -12,13 +12,12 @@ const parsePriceInfo = (data) => {
   return { minPrice: parsedJson?.grid?.minPrice }
 }
 
-app.post('/fetch-url', async (req, res) => {
-  const targetUrl = req.query.url;
-  const id = req.body;
-  console.log(id);
+app.get('/get-event-info', async (req, res) => {
+  const eventIds = req.query.id;
+  const url = `https://www.stubhub.ca/event/${eventIds}/?quantity=1`
 
   try {
-    const response = await fetch(targetUrl);
+    const response = await fetch(url);
     const data = await response.text();
     const priceObject = parsePriceInfo(data);
     res.send(priceObject);
