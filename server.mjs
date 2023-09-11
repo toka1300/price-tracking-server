@@ -5,7 +5,11 @@ const app = express();
 app.use(express.json());
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "chrome-extension://mfodbkoihimojjaiofnfnjhkgehbeecj");
+  const allowedOrigins = ['https://stubhub.ca', 'https://stubhub.com']
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
   next();
 })
 
