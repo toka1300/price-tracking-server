@@ -5,11 +5,12 @@ const app = express();
 app.use(express.json());
 
 app.use((req, res, next) => {
-  const allowedOrigins = ['https://stubhub.ca', 'https://stubhub.com']
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
+  // const allowedOrigins = ['https://stubhub.ca', 'https://stubhub.com']
+  // const origin = req.headers.origin;
+  // if (allowedOrigins.includes(origin)) {
+  //   res.header('Access-Control-Allow-Origin', origin);
+  // }
+  res.header('Access-Control-Allow-Origin', '*');
   next();
 })
 
