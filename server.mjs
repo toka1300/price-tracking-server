@@ -5,21 +5,24 @@ const app = express();
 app.use(express.json());
 
 app.use((req, res, next) => {
-  // const allowedOrigins = ['https://stubhub.ca', 'https://stubhub.com']
-  // const origin = req.headers.origin;
-  // if (allowedOrigins.includes(origin)) {
-  //   res.header('Access-Control-Allow-Origin', origin);
-  // }
   res.header('Access-Control-Allow-Origin', '*');
   next();
 })
 
-const parsePriceInfo = (data) => {
+const parseEventInfo = (data) => {
+  console.log(data);
   const jsonMatch = data.match(/<script id="index-data" type="application\/json">\s*(.*?)\s*<\/script>/);
   if (!jsonMatch || jsonMatch.length < 2) return;
   const jsonData = jsonMatch[1];
   const parsedJson = JSON.parse(jsonData);
-  return { minPrice: parsedJson?.grid?.minPrice }
+  console.log(parsedJson);
+  const eventObject = {
+    url: parsedJson.eventUrl,
+    venue: parsedJson.venueName,
+    date: parsedJson.formattedEventDateTime,
+    minPrice: parsedJson.grid.minPrice
+  };
+  return eventObject
 }
 
 app.get('/get-event-info', async (req, res) => {
@@ -29,7 +32,7 @@ app.get('/get-event-info', async (req, res) => {
   try {
     const response = await fetch(url);
     const data = await response.text();
-    const priceObject = parsePriceInfo(data);
+    const priceObject = parseEventInfo(data);
     res.send(priceObject);
   } catch (error) {
     res.status(500).send('Error fetching data')
