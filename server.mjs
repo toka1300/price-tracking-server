@@ -17,6 +17,7 @@ const parseEventInfo = (data) => {
   const parsedJson = JSON.parse(jsonData);
   console.log(parsedJson);
   const eventObject = {
+    name: parsedJson.eventName,
     url: parsedJson.eventUrl,
     venue: parsedJson.venueName,
     date: parsedJson.formattedEventDateTime,
