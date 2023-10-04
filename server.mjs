@@ -19,7 +19,8 @@ const parseEventInfo = (data) => {
     url: parsedJson.eventUrl,
     venue: parsedJson.venueName,
     date: parsedJson.formattedEventDateTime,
-    minPrice: Math.round(parsedJson.grid.minPrice)
+    minPrice: Math.round(parsedJson.grid.minPrice),
+    id: eventId,
   };
   return eventObject
 }
