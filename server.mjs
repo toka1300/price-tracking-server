@@ -14,13 +14,14 @@ const parseEventInfo = (data) => {
   if (!jsonMatch || jsonMatch.length < 2) return;
   const jsonData = jsonMatch[1];
   const parsedJson = JSON.parse(jsonData);
+  console.log(parsedJson);
   const eventObject = {
     name: parsedJson.eventName,
     url: parsedJson.eventUrl,
     venue: parsedJson.venueName,
     date: parsedJson.formattedEventDateTime,
     minPrice: Math.round(parsedJson.grid.minPrice),
-    id: eventId,
+    id: parsedJson.eventId,
   };
   return eventObject
 }
@@ -33,6 +34,7 @@ app.get('/get-event-info', async (req, res) => {
     await Promise.all(eventIds.map(async (id) => {
       const url = `https://www.stubhub.ca/event/${id}/?quantity=1`;
       const response = await fetch(url);
+      console.log(response);
       const data = await response.text();
       const priceObject = parseEventInfo(data);
       results.push(priceObject);
