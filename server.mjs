@@ -27,14 +27,15 @@ const parseEventInfo = (data) => {
 }
 
 app.get('/get-event-info', async (req, res) => {
+  console.log('Request from: ', req);
   const results = [];
   const eventIds = req.query.id.split(',');
 
   try {
     await Promise.all(eventIds.map(async (id) => {
       const url = `https://www.stubhub.ca/event/${id}/?quantity=1`;
+      console.log('Fetching: https://www.stubhub.ca/event/${id}/?quantity=1');
       const response = await fetch(url);
-      console.log(response);
       const data = await response.text();
       const priceObject = parseEventInfo(data);
       results.push(priceObject);
