@@ -14,10 +14,9 @@ const parseEventInfo = (data) => {
   if (!jsonMatch || jsonMatch.length < 2) return;
   const jsonData = jsonMatch[1];
   const parsedJson = JSON.parse(jsonData);
-  console.log(parsedJson);
   const eventObject = {
     name: parsedJson.eventName,
-    url: parsedJson.eventUrl,
+    url: parsedJson.header.profileUrl.url,
     venue: parsedJson.venueName,
     date: parsedJson.formattedEventDateTime,
     minPrice: Math.round(parsedJson.grid.minPrice),
