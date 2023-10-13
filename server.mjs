@@ -30,16 +30,17 @@ const parseEventInfo = (data) => {
 
 app.post('/email-user', async (req, res) => {
   const { email, date, name, url } = req.body;
+  const mailer = 'stubhub.price.alert@gmail.com';
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.MAILER,
+      user: mailer,
       pass: process.env.PASSWORD
     }
   })
 
   await transporter.sendMail({
-    from: '"StubHub Price Alert" <stubhub.price.alert@gmail.com>',
+    from: `"StubHub Price Alert" <${mailer}>`,
     to: email,
     subject: `Price Drop on your ${name} tickets!`,
     text: `Your ${name} tickets on ${date} have dropped below the price alert you set :) Click the url to go buy your tickets before they get snapped up! ${url}`
