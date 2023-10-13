@@ -25,9 +25,9 @@ const parseEventInfo = (data) => {
   return eventObject
 }
 
-app.get('/notify-user', async (req, res) => {
-  const { email, alert } = req.query;
-  console.log(email, alert);
+app.post('/notify-user', async (req, res) => {
+  const { email, date, name, url } = req.query;
+  console.log(email, date, name, url);
 })
 
 app.get('/get-event-info', async (req, res) => {
