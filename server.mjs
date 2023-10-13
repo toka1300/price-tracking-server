@@ -1,7 +1,10 @@
 import express from 'express'
 import fetch from 'node-fetch'
+import nodemailer from 'nodemailer'
+import { config } from 'dotenv-safe'
 
 const app = express();
+config();
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -25,9 +28,24 @@ const parseEventInfo = (data) => {
   return eventObject
 }
 
-app.post('/notify-user', async (req, res) => {
-  const { email, date, name, url } = req.query;
-  console.log(email, date, name, url);
+app.post('/email-user', async (req, res) => {
+  const { email, date, name, url } = req.body;
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.MAILER,
+      pass: process.env.PASSWORD
+    }
+  })
+
+  await transporter.sendMail({
+    from: '"StubHub Price Alert" <stubhub.price.alert@gmail.com>',
+    to: email,
+    subject: `Price Drop on your ${name} tickets!`,
+    text: `Your ${name} tickets on ${date} have dropped below the price alert you set :) Click the url to go buy your tickets before they get snapped up! ${url}`
+  })
+
+  res.send('Email sent!')
 })
 
 app.get('/get-event-info', async (req, res) => {
