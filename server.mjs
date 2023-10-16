@@ -17,6 +17,7 @@ const parseEventInfo = (data) => {
   if (!jsonMatch || jsonMatch.length < 2) return;
   const jsonData = jsonMatch[1];
   const parsedJson = JSON.parse(jsonData);
+  console.log(parsedJson, Math.round(parsedJson.grid.minPrice));
   const eventObject = {
     name: parsedJson.eventName,
     url: parsedJson.header.profileUrl.url,
