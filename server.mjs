@@ -12,7 +12,7 @@ app.use((req, res, next) => {
   next();
 })
 
-const usdToCAD = async (amount) => {
+const usdToCAD = async () => {
   const resp = await fetch('https://api.exchangerate-api.com/v4/latest/usd');
   const json = await resp.json();
   const cad = json.rates.CAD
@@ -25,6 +25,7 @@ const parseEventInfo = async (data) => {
   if (!jsonMatch || jsonMatch.length < 2) return;
   const jsonData = jsonMatch[1];
   const parsedJson = JSON.parse(jsonData);
+  const cad = await usdToCAD()
   const eventObject = {
     name: parsedJson.eventName,
     url: parsedJson.header.profileUrl.url,
@@ -69,7 +70,7 @@ app.get('/get-event-info', async (req, res) => {
       console.log(`Fetching: https://www.stubhub.ca/event/${id}/?quantity=1`);
       const response = await fetch(url);
       const data = await response.text();
-      const priceObject = parseEventInfo(data);
+      const priceObject = await parseEventInfo(data);
       results.push(priceObject);
     }))
     res.send(results);
