@@ -12,18 +12,26 @@ app.use((req, res, next) => {
   next();
 })
 
-const parseEventInfo = (data) => {
+const usdToCAD = async (amount) => {
+  const resp = await fetch('https://api.exchangerate-api.com/v4/latest/usd');
+  const json = await resp.json();
+  const cad = json.rates.CAD
+  return cad;
+}
+
+
+const parseEventInfo = async (data) => {
   const jsonMatch = data.match(/<script id="index-data" type="application\/json">\s*(.*?)\s*<\/script>/);
   if (!jsonMatch || jsonMatch.length < 2) return;
   const jsonData = jsonMatch[1];
   const parsedJson = JSON.parse(jsonData);
-  console.log(parsedJson, Math.round(parsedJson.grid.minPrice));
   const eventObject = {
     name: parsedJson.eventName,
     url: parsedJson.header.profileUrl.url,
     venue: parsedJson.venueName,
     date: parsedJson.formattedEventDateTime,
     minPrice: Math.round(parsedJson.grid.minPrice),
+    minPriceCad: Math.round(parsedJson.grid.minPrice) * cad,
     id: parsedJson.eventId,
   };
   return eventObject
@@ -58,7 +66,7 @@ app.get('/get-event-info', async (req, res) => {
   try {
     await Promise.all(eventIds.map(async (id) => {
       const url = `https://www.stubhub.ca/event/${id}/?quantity=1`;
-      console.log('Fetching: https://www.stubhub.ca/event/${id}/?quantity=1');
+      console.log(`Fetching: https://www.stubhub.ca/event/${id}/?quantity=1`);
       const response = await fetch(url);
       const data = await response.text();
       const priceObject = parseEventInfo(data);
