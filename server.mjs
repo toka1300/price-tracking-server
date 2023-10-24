@@ -30,8 +30,8 @@ const parseEventInfo = async (data) => {
     url: parsedJson.header.profileUrl.url,
     venue: parsedJson.venueName,
     date: parsedJson.formattedEventDateTime,
-    minPrice: Math.round(parsedJson.grid.minPrice),
-    minPriceCad: Math.round(parsedJson.grid.minPrice) * cad,
+    minPrice: Math.round(parsedJson.grid.minPrice) * cad,
+    minPriceUsd: Math.round(parsedJson.grid.minPrice),
     id: parsedJson.eventId,
   };
   return eventObject
