@@ -53,7 +53,9 @@ app.post('/email-user', async (req, res) => {
     from: `"StubHub Price Alert" <${mailer}>`,
     to: email,
     subject: `Price Drop on your ${name} tickets!`,
-    text: `Your ${name} tickets on ${date} have dropped below the price alert you set :) Click the url to go buy your tickets before they get snapped up! ${url}`
+    text: `Your ${name} tickets on ${date} have dropped below the price alert you set :)
+      Click the url below to go buy your tickets before they get snapped up! 
+      ${url}`
   })
   res.set('Content-Type', 'text/html')
   res.send('Email sent!')
@@ -66,11 +68,12 @@ app.get('/get-event-info', async (req, res) => {
 
   try {
     await Promise.all(eventIds.map(async (id) => {
-      const url = `https://www.stubhub.ca/event/${id}/?quantity=1`;
-      console.log(`Fetching: https://www.stubhub.ca/event/${id}/?quantity=1`);
+      const url = `https://www.stubhub.ca/event/${id}/?quantity=2`;
+      console.log(`Fetching: https://www.stubhub.ca/event/${id}/?quantity=2`);
       const response = await fetch(url);
       const data = await response.text();
       const priceObject = await parseEventInfo(data);
+      console.log(priceObject);
       results.push(priceObject);
     }))
     res.send(results);
