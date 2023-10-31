@@ -56,9 +56,8 @@ app.post('/email-user', async (req, res) => {
     text: `Hey There!
     
     Your ${name} tickets on ${date} have dropped below the price alert you set :)
-    Click the url below to go buy your tickets before they get snapped up!
 
-    ${url}`
+    <a href="${url}">Click here</a> to go buy your tickets before they get snapped up!`
   })
   res.set('Content-Type', 'text/html')
   res.send('Email sent!')
