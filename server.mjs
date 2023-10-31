@@ -53,12 +53,12 @@ app.post('/email-user', async (req, res) => {
     from: `"StubHub Price Alert" <${mailer}>`,
     to: email,
     subject: `Price Drop on your ${name} tickets!`,
-    text: `Hey There!
-    
-    Your ${name} tickets on ${date} have dropped below the price alert you set :)
-
-    <a href="${url}">Click here</a> to go buy your tickets before they get snapped up!`
-  })
+    html: `
+        <p>Hey There!</p>
+        <p>Your ${name} tickets on ${date} have dropped below the price alert you set :)</p>
+        <p><a href="${url}">Click here</a> to go buy your tickets before they get snapped up!</p>
+    `
+});
   res.set('Content-Type', 'text/html')
   res.send('Email sent!')
 })
