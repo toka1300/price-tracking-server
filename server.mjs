@@ -62,6 +62,37 @@ app.post('/email-user', async (req, res) => {
   res.send('Email sent!')
 })
 
+async function retryFetch(url, retries = 3, delay = 100) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        console.log('response is not ok!')
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.text();
+      const priceObject = await parseEventInfo(data);
+
+      if (priceObject) {
+        return priceObject;
+      } else {
+        throw new Error('Price object is undefined');
+      }
+    } catch (error) {
+      console.error(`Attempt ${attempt} failed for URL ${url}: ${error.message}`);
+      
+      if (attempt < retries) {
+        console.log(`Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      } else {
+        throw new Error(`Failed after ${retries} attempts: ${error.message}`);
+      }
+    }
+  }
+}
+
 app.get('/get-event-info', async (req, res) => {
   const results = [];
   const eventIds = req.query.id.split(',');
@@ -70,14 +101,19 @@ app.get('/get-event-info', async (req, res) => {
     await Promise.all(eventIds.map(async (id) => {
       const url = `https://www.stubhub.ca/event/${id}/?quantity=0`;
       console.log(`Fetching: https://www.stubhub.ca/event/${id}/?quantity=0`);
-      const response = await fetch(url);
-      const data = await response.text();
-      const priceObject = await parseEventInfo(data);
-      console.log(priceObject);
-      results.push(priceObject);
+
+      try {
+        const priceObject = await retryFetch(url);
+        console.log(priceObject);
+        results.push(priceObject);
+      } catch (fetchError) {
+        console.error(`Failed to fetch data for event ID ${id}: ${fetchError.message}`);
+        results.push({ id, error: fetchError.message });
+      }
     }))
     res.send(results);
   } catch (error) {
+    console.log('Got an error:', error)
     res.status(500).send('Error fetching data')
   }
 })
