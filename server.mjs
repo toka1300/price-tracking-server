@@ -19,7 +19,6 @@ const usdToCAD = async () => {
   return cad;
 }
 
-
 const parseEventInfo = async (data) => {
   const jsonMatch = data.match(/<script id="index-data" type="application\/json">\s*(.*?)\s*<\/script>/);
   if (!jsonMatch || jsonMatch.length < 2) return;
@@ -40,7 +39,7 @@ const parseEventInfo = async (data) => {
 
 app.post('/email-user', async (req, res) => {
   const { email, date, name, url } = req.body;
-  const mailer = 'stubhub.price.alert@gmail.com';
+  const mailer = 'stubhub.alerts@gmail.com';
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -64,14 +63,13 @@ app.post('/email-user', async (req, res) => {
 })
 
 app.get('/get-event-info', async (req, res) => {
-  console.log('Request from: ', req);
   const results = [];
   const eventIds = req.query.id.split(',');
 
   try {
     await Promise.all(eventIds.map(async (id) => {
-      const url = `https://www.stubhub.ca/event/${id}/?quantity=2`;
-      console.log(`Fetching: https://www.stubhub.ca/event/${id}/?quantity=2`);
+      const url = `https://www.stubhub.ca/event/${id}/?quantity=0`;
+      console.log(`Fetching: https://www.stubhub.ca/event/${id}/?quantity=0`);
       const response = await fetch(url);
       const data = await response.text();
       const priceObject = await parseEventInfo(data);
