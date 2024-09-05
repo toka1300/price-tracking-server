@@ -38,6 +38,7 @@ const parseEventInfo = async (data) => {
 }
 
 app.post('/email-user', async (req, res) => {
+  console.log('sending email', req)
   const { email, date, name, url } = req.body;
   const mailer = 'stubhub.alerts@gmail.com';
   let transporter = nodemailer.createTransport({
