@@ -38,8 +38,8 @@ const parseEventInfo = async (data) => {
 }
 
 app.post('/email-user', async (req, res) => {
-  console.log('sending email', req)
   const { email, date, name, url } = req.body;
+  console.log('sending email for:', name)
   const mailer = 'stubhub.alerts@gmail.com';
   let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -105,7 +105,6 @@ app.get('/get-event-info', async (req, res) => {
 
       try {
         const priceObject = await retryFetch(url);
-        console.log(priceObject);
         results.push(priceObject);
       } catch (fetchError) {
         console.error(`Failed to fetch data for event ID ${id}: ${fetchError.message}`);
