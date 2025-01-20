@@ -75,6 +75,7 @@ async function retryFetch(url, retries = 3, delay = 100) {
 
       const data = await response.text();
       const priceObject = await parseEventInfo(data);
+      console.log(priceObject)
 
       if (priceObject) {
         return priceObject;
@@ -97,11 +98,11 @@ async function retryFetch(url, retries = 3, delay = 100) {
 app.get('/get-event-info', async (req, res) => {
   const results = [];
   const eventIds = req.query.id.split(',');
+  const country = req.query.country;
 
   try {
     await Promise.all(eventIds.map(async (id) => {
-      const url = `https://www.stubhub.ca/event/${id}/?quantity=0`;
-      console.log(`Fetching: https://www.stubhub.ca/event/${id}/?quantity=0`);
+      const url = `https://www.stubhub.${country}/event/${id}/?quantity=0`;
 
       try {
         const priceObject = await retryFetch(url);
