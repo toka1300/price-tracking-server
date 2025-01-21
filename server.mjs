@@ -24,16 +24,18 @@ const parseEventInfo = async (data) => {
   if (!jsonMatch || jsonMatch.length < 2) return;
   const jsonData = jsonMatch[1];
   const parsedJson = JSON.parse(jsonData);
+  // console.log(parsedJson)
   const cad = await usdToCAD()
   const eventObject = {
     name: parsedJson.eventName,
-    url: parsedJson.header.profileUrl.url,
+    url: parsedJson.eventUrl,
     venue: parsedJson.venueName,
     date: parsedJson.formattedEventDateTime,
     minPrice: Math.round(parsedJson.grid.minPrice * cad),
     minPriceUsd: Math.round(parsedJson.grid.minPrice),
     id: parsedJson.eventId,
   };
+  console.log(eventObject)
   return eventObject
 }
 
