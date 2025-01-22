@@ -19,7 +19,7 @@ const usdToCAD = async () => {
   return cad;
 }
 
-const parseEventInfo = async (data) => {
+const parseEventInfo = async (data, country) => {
   const jsonMatch = data.match(/<script id="index-data" type="application\/json">\s*(.*?)\s*<\/script>/);
   if (!jsonMatch || jsonMatch.length < 2) return;
   const jsonData = jsonMatch[1];
@@ -34,8 +34,8 @@ const parseEventInfo = async (data) => {
     minPrice: Math.round(parsedJson.grid.minPrice * cad),
     minPriceUsd: Math.round(parsedJson.grid.minPrice),
     id: parsedJson.eventId,
+    countryDomain: country
   };
-  console.log(eventObject)
   return eventObject
 }
 
@@ -65,7 +65,7 @@ app.post('/email-user', async (req, res) => {
   res.send('Email sent!')
 })
 
-async function retryFetch(url, retries = 3, delay = 100) {
+async function retryFetch(url, country, retries = 3, delay = 100) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const response = await fetch(url);
@@ -76,7 +76,7 @@ async function retryFetch(url, retries = 3, delay = 100) {
       }
 
       const data = await response.text();
-      const priceObject = await parseEventInfo(data);
+      const priceObject = await parseEventInfo(data, country);
       console.log(priceObject)
 
       if (priceObject) {
@@ -107,7 +107,7 @@ app.get('/get-event-info', async (req, res) => {
       const url = `https://www.stubhub.${country}/event/${id}/?quantity=0`;
 
       try {
-        const priceObject = await retryFetch(url);
+        const priceObject = await retryFetch(url, country);
         results.push(priceObject);
       } catch (fetchError) {
         console.error(`Failed to fetch data for event ID ${id}: ${fetchError.message}`);
